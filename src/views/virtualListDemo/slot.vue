@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>{{node.label}}</span>
+    <span>{{node.title}}</span>
     <span>编辑 </span>
     <span>移动 </span>
     <span>删除 </span>

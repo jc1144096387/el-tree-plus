@@ -132,6 +132,7 @@
       },
 
       'node.expanded'(val) {
+        console.log(this.node.id, val);
         this.$nextTick(() => this.expanded = val);
         if (val) {
           this.childNodeRendered = true;
@@ -179,11 +180,13 @@
       handleExpandIconClick() {
         if (this.node.isLeaf) return;
         if (this.expanded) {
-          this.tree.$emit('node-collapse', this.node.data, this.node, this);
+          // this.tree.$emit('node-collapse', this.node.data, this.node, this);
           this.node.collapse();
+          this.expanded = false;
         } else {
           this.node.expand();
-          this.$emit('node-expand', this.node.data, this.node, this);
+          this.expanded = true;
+          // this.$emit('node-expand', this.node.data, this.node, this);
         }
       },
 

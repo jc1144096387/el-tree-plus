@@ -10,22 +10,12 @@
     role="tree"
     ref="tree"
   >
-    <!-- <el-tree-node
-      v-for="child in root.childNodes"
-      :node="child"
-      :props="props"
-      :render-after-expand="renderAfterExpand"
-      :show-checkbox="showCheckbox"
-      :key="getNodeKey(child)"
-      :render-content="renderContent"
-      @node-expand="handleNodeExpand">
-    </el-tree-node> -->
     <virtual-list class="list scroll-touch"
       :data-key="'id'"
-      :data-sources="root.childNodes"
+      :data-sources="store.visibleNodeList"
       :data-component="treeItem"
 
-      :estimate-size="50"
+      :estimate-size="61"
       :item-class="'list-item-fixed'"
 
       :item-scoped-slots="itemScopedSlots"
@@ -45,20 +35,19 @@
 <script>
   import TreeStore from './model/tree-store';
   import { getNodeKey, findNearestComponent } from './model/util';
-  import ElTreeNode from './tree-node.vue';
   import {t} from '@/locale';
   import emitter from '@/mixins/emitter';
   import { addClass, removeClass } from '@/utils/dom';
 
   import VirtualList from "@/components/virtual-list/index.js";
   import TreeItem from "./tree-item.vue";
-  import Item from './Item';
+  import FlattenTreeStore from "./virtual/flatten-tree-store.js";
+  
   export default {
     name: 'ElTreePlus',
     mixins: [emitter],
 
     components: {
-      ElTreeNode,
       VirtualList,
     },
 
@@ -75,11 +64,16 @@
           dropNode: null,
           allowDrop: true
         },
+        // 节点组件
         treeItem: TreeItem
       };
     },
 
     props: {
+      virtual:{
+        type: Boolean,
+        default: true
+      },
       data: {
         type: Array
       },
@@ -163,6 +157,9 @@
       },
 
       isEmpty() {
+        if(this.virtual){
+          return this.store.nodeList.length>0;
+        }
         const { childNodes } = this.root;
         return !childNodes || childNodes.length === 0 || childNodes.every(({visible}) => !visible);
       },
@@ -344,8 +341,30 @@
     },
 
     created() {
+      if(this.virtual){
+        this.store = new FlattenTreeStore({
+          key: this.nodeKey,
+          data: this.data,
+          lazy: this.lazy,
+          props: this.props,
+          load: this.load,
+          currentNodeKey: this.currentNodeKey,
+          checkStrictly: this.checkStrictly,
+          checkDescendants: this.checkDescendants,
+          defaultCheckedKeys: this.defaultCheckedKeys,
+          defaultExpandedKeys: this.defaultExpandedKeys,
+          autoExpandParent: this.autoExpandParent,
+          defaultExpandAll: this.defaultExpandAll,
+          filterNodeMethod: this.filterNodeMethod
+        })
+
+        return;
+      }
+
+
       this.isTree = true;
 
+      // 创建一个TreeStore对象，TreeStore中创建Node对象，其中root是根Node对象
       this.store = new TreeStore({
         key: this.nodeKey,
         data: this.data,
@@ -509,13 +528,13 @@
     },
 
     mounted() {
-      this.initTabIndex();
-      this.$el.addEventListener('keydown', this.handleKeydown);
+      // this.initTabIndex();
+      // this.$el.addEventListener('keydown', this.handleKeydown);
     },
 
     updated() {
-      this.treeItems = this.$el.querySelectorAll('[role=treeitem]');
-      this.checkboxItems = this.$el.querySelectorAll('input[type=checkbox]');
+      // this.treeItems = this.$el.querySelectorAll('[role=treeitem]');
+      // this.checkboxItems = this.$el.querySelectorAll('input[type=checkbox]');
     }
   };
 </script>

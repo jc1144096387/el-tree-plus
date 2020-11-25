@@ -1,5 +1,5 @@
-const maxNode = 10000; //最大的节点数
-const childNodesNumber = [2, 5]; //子节点数
+const maxNode = 100000; //最大的节点数
+const childNodesNumber = [20000, 100000]; //子节点数
 const maxLevel = 3; //最大嵌套层级
 const childRate = 0.4; //拥有子节点的概率
 const label = "节点"; //节点label

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main">
-      <el-tree-plus :data="flattenTree" :props="treeProps">
+      <el-tree-plus :data="tree" :props="treeProps">
           <template v-slot="{node}">
             <item-slot :node="node"></item-slot>
           </template>
@@ -9,9 +9,13 @@
     </div>
       <div>
     <div class="main">
-      <!-- <el-tree :data="tree" :props="treeProps"></el-tree> -->
+      <!-- <el-tree :data="tree" :props="treeProps">
+         <template v-slot="{data}">
+            <item-slot :node="data"></item-slot>
+          </template>
+      </el-tree> -->
     </div>
-    <p class="label">节点总数:{{ flattenTree.length }}</p>
+    <!-- <p class="label">节点总数:{{ flattenTree.length }}</p> -->
   </div>
   </div>
 </template>
