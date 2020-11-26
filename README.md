@@ -3,8 +3,6 @@
 大数据平台有海量数据，树组件需要展示大量节点，el-tree不满足展示大量节点的需求，数据量较大时，el-tree会出现卡死，甚至导致网页崩溃
 为解决这一问题，需要修改el-tree源码，引入vue-virtual-scroll-list实现虚拟滚动
 
-
-## TODO List
 - 更仔细的了解vue-virtual-scroll-list的用法
 - 考虑如何改造el-tree
   + 阅读el-tree store逻辑，考虑如何扁平化存储
@@ -14,6 +12,12 @@
   + slot和render
   + 性能测试
   + 代码整理和封装，提供更好的接口
+
+## TODO List
+- 增删改
+- 移动、复制、定位
+- 定制样式
+
 
 - 功能完善之后，考虑优化flatten操作，15w节点flatten操作栈溢出
 
@@ -68,3 +72,6 @@ tree.vue中增加virtual属性，如果virtual为true，表示启用虚拟滚动
 15w个节点进行flatten操作时，出现了栈溢出
 12w个节点不会溢出，且展开收缩良好
 后续考虑优化flatten操作
+
+目前的展开收缩的性能瓶颈在于节点总数
+10w节点的耗时在1s左右

@@ -97,13 +97,17 @@ export default class TreeStore {
 
   // 展开节点
   expandNode(id){
+    console.time("fn expandNode");
+    setTimeout(()=>{
+      console.timeEnd("fn expandNode");
+    })
     let node = null;
     let tree = {};
     tree[this.props.children] = this.data;
     console.time("travelTree");
     travelTree(tree, this.props.children, n =>{
       // console.log(node.id, id)
-      if(n.id === id){
+      if(n.id == id){
         n.expanded = true;
         node = n;
         return false;
@@ -113,26 +117,33 @@ export default class TreeStore {
     console.timeEnd("travelTree");
     // this.updateList();
     console.time("expandNode");
+    console.time("expandNode flattenTree")
+    console.log(this.data)
     this.itemList = flattenTree(this.data, this.props.children, 1, null, this.defaultExpandAll);
+    console.timeEnd("expandNode flattenTree")
     this.itemList.map(item => {
-      this.itemsMap[item.id].expanded = item.expanded;
-      this.itemsMap[item.id].visible = item.visible;
+      this.itemsMap[item.id] = item
       this.nodesMap[item.id].expanded = item.expanded;
       this.nodesMap[item.id].visible = item.visible;
     })
+    console.log(this.nodesMap[1], this.itemsMap[1], this.data)
     this.visibleNodeList = this.nodeList.filter(n => n.visible);
     console.timeEnd("expandNode");
   }
 
   // 收缩节点
   collapseNode(id){
+    console.time("fn collapseNode");
+    setTimeout(()=>{
+      console.timeEnd("fn collapseNode");
+    })
     let node = null;
     let tree = {};
     tree[this.props.children] = this.data;
     console.time("travelTree");
     travelTree(tree, this.props.children, n =>{
       // console.log(node.id, id)
-      if(n.id === id){
+      if(n.id == id){
         n.expanded = false;
         node = n;
         return false;
@@ -144,13 +155,190 @@ export default class TreeStore {
     console.time("collapseNode");
     this.itemList = flattenTree(this.data, this.props.children, 1, null, this.defaultExpandAll);
     this.itemList.map(item => {
-      this.itemsMap[item.id].expanded = item.expanded;
-      this.itemsMap[item.id].visible = item.visible;
+      this.itemsMap[item.id].item
       this.nodesMap[item.id].expanded = item.expanded;
       this.nodesMap[item.id].visible = item.visible;
     })
+    console.log(this.nodesMap[1], this.itemsMap[1])
     this.visibleNodeList = this.nodeList.filter(n => n.visible);
     console.timeEnd("collapseNode");
+  }
+
+  // 新增节点
+  // index: 插入到父节点的指定位置，从0开始计数，无index或大于等于children.length时插到末尾，小于等于0插到头部
+  addNode(pId, newNode, index){
+    if(this.nodesMap[newNode.id]){
+      console.error("the node is already exists");
+      return;
+    }
+    console.time("fn addNode");
+    setTimeout(()=>{
+      console.timeEnd("fn addNode");
+    })
+    let node = null;
+    let tree = {};
+    tree[this.props.children] = this.data;
+    console.log(this);
+    console.time("travelTree");
+    travelTree(tree, this.props.children, n =>{
+      console.log(n.id, pId)
+      if(n.id == pId){
+        node = n;
+        return false;
+      }
+      return true;
+    })
+    console.timeEnd("travelTree");
+    console.log(this, node, this.props.children);
+    if(!node){
+      console.error("can not find the parent node!");
+      return;
+    }
+    if(!node[this.props.children]){
+      node[this.props.children] = [];
+    }
+    if(index === undefined || index === null || index >= node[this.props.children].length){
+      node[this.props.children].push(newNode);
+    }else if(index <= 0){
+      node[this.props.children].unshift(newNode);
+    }else {
+      node[this.props.children].splice(index, 0, newNode);
+    }
+    node.isLeaf = false;
+    this.nodesMap[node.id].isLeaf = false;
+    console.log(this.data)
+    this.itemList = flattenTree(this.data, this.props.children, 1, null, this.defaultExpandAll);
+    this.itemList.map(item =>{
+      this.itemsMap[item.id] = item;
+    })
+    let itemIndex = this.itemList.findIndex(item => item.id === newNode.id);
+    console.log(itemIndex);
+    if(itemIndex === -1){
+      console.err("can not find the item!");
+      return;
+    }
+    let flattenNode = new FlattenNode({...this.itemList[itemIndex], store: this});
+    this.nodeList.splice(itemIndex, 0, flattenNode);
+    this.nodesMap[flattenNode.id] = flattenNode;
+    console.log(this.itemList[itemIndex])
+    this.visibleNodeList = this.nodeList.filter(n => n.visible);
+    console.log(this.nodeList, this.visibleNodeList)
+
+  }
+
+  // 编辑节点
+  editNode(data){
+    console.log(data);
+    if(data.id === null || data.id === undefined){
+      console.error("please set the node key");
+      return;
+    }
+    console.time("fn editNode");
+    setTimeout(()=>{
+      console.timeEnd("fn editNode");
+    })
+    let node = null;
+    let tree = {};
+    tree[this.props.children] = this.data;
+    console.log(this);
+    console.time("travelTree");
+    travelTree(tree, this.props.children, n =>{
+      // console.log(n.id, data.id)
+      if(n.id == data.id){
+        node = n;
+        return false;
+      }
+      return true;
+    })
+    console.timeEnd("travelTree");
+    console.log(this, node, this.props.children);
+    if(!node){
+      console.error("can not find the node!");
+      return;
+    }
+    Object.assign(node, data);
+    this.itemList = flattenTree(this.data, this.props.children, 1, null, this.defaultExpandAll);
+    this.itemList.map(item =>{
+      this.itemsMap[item.id] = item;
+    })
+    let item = this.itemsMap[data.id];
+    if(!item){
+      console.error("can not find the item");
+      return;
+    }
+    let flattenNode = new FlattenNode({...item, store: this});
+    // let nodeIndex = this.nodeList.findIndex(n => n.id === data.id);
+    // if(nodeIndex === -1){
+    //   console.error("can not find the node");
+    //   return;
+    // }
+    // Object.assign(this.nodeList[nodeIndex], flattenNode);
+    Object.assign(this.nodesMap[flattenNode.id], flattenNode);
+    flattenNode = null;
+    this.visibleNodeList = this.nodeList.filter(n => n.visible);
+  }
+
+  // 删除节点
+  deleteNode(id){
+    if(id === null || id === undefined){
+      console.error("please set the node key");
+      return;
+    }
+    if(!this.nodesMap[id]){
+      console.error("please set the correct node key");
+      return;
+    }
+    console.time("fn deleteNode");
+    setTimeout(()=>{
+      console.timeEnd("fn deleteNode");
+    })
+    let node = null;
+    let tree = {};
+    tree[this.props.children] = this.data;
+    // console.log(this);
+    console.time("travelTree");
+    // 找到要删除的节点
+    travelTree(tree, this.props.children, n =>{
+      // console.log(n.id, data.id)
+      if(n.id == id){
+        node = n;
+        return false;
+      }
+      return true;
+    })
+    console.timeEnd("travelTree");
+    // console.log(this, node, this.props.children);
+    if(!node){
+      console.error("can not find the node!");
+      return;
+    }
+    if(!node.parent){
+      node.parent = tree;
+    }
+    let childIndex = node.parent[this.props.children].findIndex(c => c.id === node.id);
+    if(childIndex === -1){
+      console.error(("can not find the child!"));
+      return;
+    }
+    node.parent[this.props.children].splice(childIndex, 1);
+    this.itemList = flattenTree(this.data, this.props.children, 1, null, this.defaultExpandAll);
+    this.itemList.map(item =>{
+      this.itemsMap[item.id] = item;
+      this.nodesMap[item.id].isLeaf = !(item.children&&item.children.length>0);
+    })
+    let ids = [];
+    travelTree(node, this.props.children, n =>{
+      ids.push(n.id);
+      return true;
+    })
+    // console.log(ids);
+    ids.map(id => {
+      this.nodesMap[id].isDelete = true;
+      delete this.nodesMap[id];
+    })
+    // console.log(this.nodeList);
+    this.nodeList = this.nodeList.filter(n => !n.isDelete);
+    this.visibleNodeList = this.nodeList.filter(n => n.visible);
   }
 
   filter(value) {

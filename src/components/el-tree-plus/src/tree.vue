@@ -15,6 +15,7 @@
       :data-sources="store.visibleNodeList"
       :data-component="treeItem"
 
+      :keeps="30"
       :estimate-size="61"
       :item-class="'list-item-fixed'"
 
@@ -198,6 +199,21 @@
     },
 
     methods: {
+      // 新增节点
+      addNode(pId, newNode, index){
+        this.store.addNode(pId, newNode, index);
+      },
+      // 编辑节点
+      editNode(data){
+        this.store.editNode(data);
+      },
+      // 删除节点
+      deleteNode(id){
+        this.store.deleteNode(id);
+      },
+
+
+
       filter(value) {
         if (!this.filterNodeMethod) throw new Error('[Tree] filterNodeMethod is required when filter');
         this.store.filter(value);

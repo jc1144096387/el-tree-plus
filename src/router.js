@@ -3,6 +3,7 @@ import Router from "vue-router";
 import elTree from "./views/elTree.vue";
 import elTreePlus from "./views/elTreePlusDemo.vue";
 import virtualListDemo from './views/virtualListDemo/index.vue';
+import test from './views/test/index.vue';
 
 Vue.use(Router);
 
@@ -29,6 +30,11 @@ export default new Router({
       path: "/virtualListDemo",
       name: "virtualListDemo",
       component: virtualListDemo
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: test
     }
   ]
 });

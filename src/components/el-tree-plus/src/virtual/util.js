@@ -9,6 +9,9 @@ export const flattenTree = function(
   // console.log(tree);
   tree.forEach(item => {
     // console.log(item)
+    if(item.id === 8){
+      console.log(item)
+    }
     item.level = level;
     if (item.expanded === undefined) {
       item.expanded = defaultExpand;

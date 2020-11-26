@@ -47,6 +47,7 @@
         v-if="node.loading"
         class="el-tree-node__loading-icon el-icon-loading">
       </span>
+      {{node.isLeaf}}
       <node-content :node="node" :itemScopedSlots="itemScopedSlots"></node-content>
     </div>
   </div>
@@ -132,7 +133,7 @@
       },
 
       'node.expanded'(val) {
-        console.log(this.node.id, val);
+        // console.log(this.node.id, val);
         this.$nextTick(() => this.expanded = val);
         if (val) {
           this.childNodeRendered = true;

@@ -15,11 +15,12 @@ const randomInteger = function(min, max) {
 
 const generateId = function() {
   ++index;
-  return (
-    Math.random()
-      .toString()
-      .slice(3) * 1
-  );
+  // return (
+  //   Math.random()
+  //     .toString()
+  //     .slice(3) * 1
+  // );
+  return index;
 };
 const generateNode = function() {
   const id = generateId();

@@ -1,9 +1,9 @@
 <template>
   <div>
     <span>{{node.title}}</span>
-    <span>编辑 </span>
+    <span @click="handleNodeEdit">编辑 </span>
     <span>移动 </span>
-    <span>删除 </span>
+    <span @click="handleNodeDelete">删除 </span>
   </div>
 </template>
 
@@ -16,6 +16,14 @@ export default {
   data(){
     return {
       txt: "I am slot"
+    }
+  },
+  methods:{
+    handleNodeEdit(){
+      this.$emit('edit-node', this.node);
+    },
+    handleNodeDelete(){
+      this.$emit('delete-node', this.node)
     }
   }
 }

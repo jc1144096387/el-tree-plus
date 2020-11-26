@@ -166,41 +166,41 @@ export default class FlattenNode {
     }
   }
 
-  get label() {
-    return getPropertyFromData(this, 'label');
-  }
+  // get label() {
+  //   return getPropertyFromData(this, 'label');
+  // }
 
-  get key() {
-    const nodeKey = this.store.key;
-    if (this.data) return this.data[nodeKey];
-    return null;
-  }
+  // get key() {
+  //   const nodeKey = this.store.key;
+  //   if (this.data) return this.data[nodeKey];
+  //   return null;
+  // }
 
-  get disabled() {
-    return getPropertyFromData(this, 'disabled');
-  }
+  // get disabled() {
+  //   return getPropertyFromData(this, 'disabled');
+  // }
 
-  get nextSibling() {
-    const parent = this.parent;
-    if (parent) {
-      const index = parent.childNodes.indexOf(this);
-      if (index > -1) {
-        return parent.childNodes[index + 1];
-      }
-    }
-    return null;
-  }
+  // get nextSibling() {
+  //   const parent = this.parent;
+  //   if (parent) {
+  //     const index = parent.childNodes.indexOf(this);
+  //     if (index > -1) {
+  //       return parent.childNodes[index + 1];
+  //     }
+  //   }
+  //   return null;
+  // }
 
-  get previousSibling() {
-    const parent = this.parent;
-    if (parent) {
-      const index = parent.childNodes.indexOf(this);
-      if (index > -1) {
-        return index > 0 ? parent.childNodes[index - 1] : null;
-      }
-    }
-    return null;
-  }
+  // get previousSibling() {
+  //   const parent = this.parent;
+  //   if (parent) {
+  //     const index = parent.childNodes.indexOf(this);
+  //     if (index > -1) {
+  //       return index > 0 ? parent.childNodes[index - 1] : null;
+  //     }
+  //   }
+  //   return null;
+  // }
 
   contains(target, deep = true) {
     const walk = function(parent) {
